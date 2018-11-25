@@ -22,6 +22,24 @@ app.post('/todos', (req,res) => {
 	})
 });
 
+app.post('/users', (req,res) => {
+	var user = new User({
+		email: req.body.email,
+		password: req.body.password
+	});
+
+	user.save().then(() => {
+		return user.generateAuthToken();
+}).then((token) =>{
+	res.header('x-auth',token).send(user);
+}).catch((e) => {
+		console.log('Error',e);
+		res.status(400).send(e);
+	})
+});
+
+
+
 
 
 
