@@ -24,6 +24,14 @@ app.post('/todos', (req,res) => {
 	})
 });
 
+app.get('/todos',(req,res) =>{
+	Todo.find().then((todos) => {
+		res.send({todos});
+	}, (e) => {
+		res.status(400).send(e);
+	});
+});
+
 app.post('/users', (req,res) => {
 	var user = new User({
 		email: req.body.email,
@@ -77,3 +85,5 @@ app.delete('/users/me/token', authenticate, (req, res) => {
 app.listen(3000, ()=> {
 	console.log('Started on port 3000');
 });
+
+module.export = {app};
