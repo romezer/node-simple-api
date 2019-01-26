@@ -10,6 +10,7 @@ const {ObjectID} = require('mongodb');
 
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -72,7 +73,6 @@ app.get('/users/me', authenticate,  (req,res) => {
 });
 
 
-// POST /users/login {email,password}
 
 app.post('/users/login', (req, res) => {
 	var body = _.pick(req.body, ['email','password']);
@@ -95,12 +95,29 @@ app.delete('/users/me/token', authenticate, (req, res) => {
 	});
 });
 
+app.delete('/todos/:id',(req,res) =>{
+	var id = req.params.id;
+
+	if(!ObjectID.isValid(id)){
+		return res.status(404).send();
+	}
+
+	Todo.findByIdAndRemove(id).then((todo) =>{
+		if(!todo){
+			return status(404)
+		}
+		res.send(todo);
+	}).catch((e) =>{
+		res.status(400).send();
+	});
+})
 
 
 
 
-app.listen(3000, ()=> {
-	console.log('Started on port 3000');
+
+app.listen(port, ()=> {
+	console.log(`Started on port ${port}`);
 });
 
 module.exports = {app};
